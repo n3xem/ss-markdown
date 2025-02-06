@@ -1,0 +1,40 @@
+name: Translate Markdown Files
+
+on:
+  push:
+    paths:
+      - "**.md"
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+
+      - name: Install dependencies
+        run: |
+          cd .github/scripts
+          go mod init translator
+          go mod tidy
+          cd ../../
+
+      - name: Run translation script
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: go run .github/scripts/translate.go
+
+      - name: Commit translations
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          git commit -m "Add translations for markdown files" || exit 0
+          git push
