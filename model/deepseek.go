@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"context"
@@ -13,7 +13,7 @@ type DeepseekTranslator struct {
 	apiKey string
 }
 
-func NewDeepseekTranslator(apiKey string, model string) TranslationClient {
+func NewDeepseekTranslator(apiKey string) TranslationClient {
 	return &DeepseekTranslator{
 		apiKey: apiKey,
 	}
@@ -27,7 +27,7 @@ func (t *DeepseekTranslator) Translate(content, targetLang string) (string, erro
 	request := &deepseek.ChatCompletionRequest{
 		Model: deepseek.DeepSeekChat,
 		Messages: []deepseek.ChatCompletionMessage{
-			{Role: constants.ChatMessageRoleSystem, Content: fmt.Sprintf("You are a professional translator. Translate the following markdown content to %s. Preserve all markdown formatting.", languages[targetLang])},
+			{Role: constants.ChatMessageRoleSystem, Content: fmt.Sprintf("You are a professional translator. Translate the following markdown content to %s. Preserve all markdown formatting.", Languages[targetLang])},
 			{Role: constants.ChatMessageRoleUser, Content: content},
 		},
 	}

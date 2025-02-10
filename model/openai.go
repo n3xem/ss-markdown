@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"bytes"
@@ -46,7 +46,7 @@ func (t *OpenAITranslator) Translate(content, targetLang string) (string, error)
 		Messages: []ChatMessage{
 			{
 				Role:    "system",
-				Content: fmt.Sprintf("You are a professional translator. Translate the following markdown content to %s. Preserve all markdown formatting.", languages[targetLang]),
+				Content: fmt.Sprintf("You are a professional translator. Translate the following markdown content to %s. Preserve all markdown formatting.", Languages[targetLang]),
 			},
 			{
 				Role:    "user",
