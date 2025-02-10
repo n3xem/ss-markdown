@@ -21,7 +21,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd .github/scripts
           go mod tidy
 
       - name: Run translation script
