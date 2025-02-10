@@ -22,13 +22,14 @@ jobs:
       - name: Install dependencies
         run: |
           cd .github/scripts
-          go mod init translator
           go mod tidy
           cd ../../
 
       - name: Run translation script
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          SS_MODEL: ${{ secrets.SS_MODEL }}
         run: go run .github/scripts/translate.go
 
       - name: Commit translations
