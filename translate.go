@@ -101,6 +101,30 @@ func processMarkdownFile(filePath string, translator TranslationClient) error {
 }
 
 func main() {
+	if len(os.Args) < 2 {
+		fmt.Println("Error: Please specify a markdown file path")
+		os.Exit(1)
+	}
+
+	filePath := os.Args[1]
+
+	// ファイルの存在確認
+	fileInfo, err := os.Stat(filePath)
+	if err != nil {
+		fmt.Printf("Error: File not found or cannot be accessed: %v\n", err)
+		os.Exit(1)
+	}
+
+	if fileInfo.IsDir() {
+		fmt.Println("Error: Specified path is a directory. Please specify a markdown file")
+		os.Exit(1)
+	}
+
+	if !strings.HasSuffix(filePath, ".md") {
+		fmt.Println("Error: Specified file is not a markdown file")
+		os.Exit(1)
+	}
+
 	var translator TranslationClient
 
 	// 環境変数からAPIキーとモデルを取得
@@ -127,21 +151,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	// リポジトリ内のすべてのMarkdownファイルを処理
-	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if !info.IsDir() && strings.HasSuffix(path, ".md") && !strings.Contains(path, ".github") {
-			if err := processMarkdownFile(path, translator); err != nil {
-				fmt.Printf("Error processing %s: %v\n", path, err)
-			}
-		}
-		return nil
-	})
-
-	if err != nil {
-		fmt.Printf("Error walking through files: %v\n", err)
+	if err := processMarkdownFile(filePath, translator); err != nil {
+		fmt.Printf("Error processing %s: %v\n", filePath, err)
 		os.Exit(1)
 	}
 }
