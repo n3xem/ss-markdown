@@ -23,7 +23,6 @@ jobs:
         run: |
           cd .github/scripts
           go mod tidy
-          cd ../../
 
       - name: Run translation script
         env:
