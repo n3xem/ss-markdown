@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/n3xem/ss-markdown/model"
-	yaml "gopkg.in/yaml.v3"
 )
 
 func processMarkdownFile(filePath string, translator model.TranslationClient) error {
@@ -23,26 +22,10 @@ func processMarkdownFile(filePath string, translator model.TranslationClient) er
 		return err
 	}
 
-	// frontmatterとコンテンツを分離
-	parts := bytes.SplitN(content, []byte("---\n"), 3)
-	if len(parts) != 3 {
-		return fmt.Errorf("invalid frontmatter format")
-	}
-
-	var metadata map[string]interface{}
-	if err := yaml.Unmarshal(parts[1], &metadata); err != nil {
-		return err
-	}
-
-	markdownContent := string(parts[2])
+	markdownContent := string(content)
 
 	// 各言語に翻訳
 	for langCode := range model.Languages {
-		// 元の言語はスキップ
-		if originalLang, ok := metadata["language"].(string); ok && originalLang == langCode {
-			continue
-		}
-
 		dir := filepath.Dir(filePath)
 		base := strings.TrimSuffix(filepath.Base(filePath), ".md")
 		translatedPath := filepath.Join(dir, fmt.Sprintf("%s.%s.md", base, langCode))
@@ -59,22 +42,8 @@ func processMarkdownFile(filePath string, translator model.TranslationClient) er
 			continue
 		}
 
-		// 新しいメタデータを作成
-		newMetadata := make(map[string]interface{})
-		for k, v := range metadata {
-			newMetadata[k] = v
-		}
-		newMetadata["language"] = langCode
-
 		// 翻訳ファイルを保存
 		var buf bytes.Buffer
-		buf.WriteString("---\n")
-		yamlData, err := yaml.Marshal(newMetadata)
-		if err != nil {
-			return err
-		}
-		buf.Write(yamlData)
-		buf.WriteString("---\n\n")
 		buf.WriteString(translatedContent)
 
 		if err := os.WriteFile(translatedPath, buf.Bytes(), 0644); err != nil {
