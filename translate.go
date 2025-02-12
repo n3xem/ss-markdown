@@ -39,7 +39,7 @@ func processMarkdownFile(filePath string, translator model.TranslationClient) er
 		translatedContent, err := translator.Translate(markdownContent, langCode)
 		if err != nil {
 			if strings.Contains(err.Error(), "429") {
-				return fmt.Errorf("Rate limit exceeded. Please try again later.")
+				return fmt.Errorf("Rate limit exceeded. Please try again later. %v", err)
 			}
 			fmt.Printf("Error translating to %s: %v\n", langCode, err)
 			continue
