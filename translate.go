@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/n3xem/ss-markdown/model"
 )
@@ -26,6 +27,7 @@ func processMarkdownFile(filePath string, translator model.TranslationClient) er
 
 	// 各言語に翻訳
 	for langCode := range model.Languages {
+		time.Sleep(5 * time.Second)
 		dir := filepath.Dir(filePath)
 		base := strings.TrimSuffix(filepath.Base(filePath), ".md")
 		translatedPath := filepath.Join(dir, fmt.Sprintf("%s.%s.md", base, langCode))
