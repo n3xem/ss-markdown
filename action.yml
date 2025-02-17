@@ -39,10 +39,10 @@ runs:
     - name: Run translation script
       shell: bash
       env:
-        OPENAI_API_KEY: ${{ inputs.openai-api-key }}
-        DEEPSEEK_API_KEY: ${{ inputs.deepseek-api-key }}
-        GOOGLE_API_KEY: ${{ inputs.google-api-key }}
-        GOOGLE_GENERATIVE_MODEL: ${{ inputs.google-model }}
-        OPENAI_GENERATIVE_MODEL: ${{ inputs.openai-model }}
-        SS_MODEL: ${{ inputs.ss-model }}
+        SS_MARKDOWN_OPENAI_API_KEY: ${{ inputs.openai-api-key }}
+        SS_MARKDOWN_DEEPSEEK_API_KEY: ${{ inputs.deepseek-api-key }}
+        SS_MARKDOWN_GOOGLE_API_KEY: ${{ inputs.google-api-key }}
+        SS_MARKDOWN_GOOGLE_GENERATIVE_MODEL: ${{ inputs.google-model }}
+        SS_MARKDOWN_OPENAI_GENERATIVE_MODEL: ${{ inputs.openai-model }}
+        SS_MARKDOWN_MODEL: ${{ inputs.ss-model }}
       run: go run translate.go ${{ inputs.file }}

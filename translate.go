@@ -89,30 +89,30 @@ func main() {
 	var translator model.TranslationClient
 
 	// 環境変数からAPIキーとモデルを取得
-	deepseekKey := os.Getenv("DEEPSEEK_API_KEY")
-	openaiKey := os.Getenv("OPENAI_API_KEY")
-	googleKey := os.Getenv("GOOGLE_API_KEY")
-	googleGenerativeModel := os.Getenv("GOOGLE_GENERATIVE_MODEL")
-	openaiGenerativeModel := os.Getenv("OPENAI_GENERATIVE_MODEL")
-	modelName := os.Getenv("SS_MODEL")
+	deepseekKey := os.Getenv("SS_MARKDOWN_DEEPSEEK_API_KEY")
+	openaiKey := os.Getenv("SS_MARKDOWN_OPENAI_API_KEY")
+	googleKey := os.Getenv("SS_MARKDOWN_GOOGLE_API_KEY")
+	googleGenerativeModel := os.Getenv("SS_MARKDOWN_GOOGLE_GENERATIVE_MODEL")
+	openaiGenerativeModel := os.Getenv("SS_MARKDOWN_OPENAI_GENERATIVE_MODEL")
+	modelName := os.Getenv("SS_MARKDOWN_MODEL")
 
 	// 使用するモデルに基づいてトランスレーターを初期化
 	switch modelName {
 	case "openai":
 		if openaiKey == "" {
-			fmt.Println("Error: OPENAI_API_KEY is not set")
+			fmt.Println("Error: SS_MARKDOWN_OPENAI_API_KEY is not set")
 			os.Exit(1)
 		}
 		translator = model.NewOpenAITranslator(openaiKey, openaiGenerativeModel)
 	case "deepseek":
 		if deepseekKey == "" {
-			fmt.Println("Error: DEEPSEEK_API_KEY is not set")
+			fmt.Println("Error: SS_MARKDOWN_DEEPSEEK_API_KEY is not set")
 			os.Exit(1)
 		}
 		translator = model.NewDeepseekTranslator(deepseekKey)
 	case "google":
 		if googleKey == "" {
-			fmt.Println("Error: GOOGLE_API_KEY is not set")
+			fmt.Println("Error: SS_MARKDOWN_GOOGLE_API_KEY is not set")
 			os.Exit(1)
 		}
 		translator, err = model.NewGoogleTranslator(googleKey, googleGenerativeModel)
@@ -121,7 +121,7 @@ func main() {
 			os.Exit(1)
 		}
 	default:
-		fmt.Println("Error: Invalid or missing SS_MODEL (must be 'openai' or 'deepseek' or 'google')")
+		fmt.Println("Error: Invalid or missing SS_MARKDOWN_MODEL (must be 'openai' or 'deepseek' or 'google')")
 		os.Exit(1)
 	}
 
