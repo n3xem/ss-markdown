@@ -1,5 +1,12 @@
 # S.S. Markdown
 
+&nbsp;
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/dab375e4-f973-41dd-bf26-1ff34231af8c"><br>
+  All aboard!
+</p>
+  
+&nbsp;
 S.S. Markdownは、Markdownファイルを多言語展開するためのGitHub Actionsです。
 
 下記のAPIが使用できます。
