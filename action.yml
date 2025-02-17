@@ -35,6 +35,8 @@ runs:
     - name: Install dependencies
       shell: bash
       run: go mod tidy
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
 
     - name: Run translation script
       shell: bash
@@ -45,4 +47,4 @@ runs:
         SS_MARKDOWN_GOOGLE_GENERATIVE_MODEL: ${{ inputs.google-model }}
         SS_MARKDOWN_OPENAI_GENERATIVE_MODEL: ${{ inputs.openai-model }}
         SS_MARKDOWN_MODEL: ${{ inputs.ss-model }}
-      run: go run translate.go ${{ inputs.file }}
+      run: go run ${{ github.action_path }}/translate.go ${{ inputs.file }}
