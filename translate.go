@@ -36,11 +36,6 @@ func processMarkdownFile(filePath string, outputDir string, translator model.Tra
 			return fmt.Errorf("failed to create output directory: %v", err)
 		}
 
-		// 既存の翻訳ファイルをスキップ
-		if _, err := os.Stat(translatedPath); err == nil {
-			continue
-		}
-
 		// コンテンツを翻訳
 		translatedContent, err := translator.Translate(markdownContent, langCode)
 		if err != nil {
