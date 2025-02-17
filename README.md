@@ -1,6 +1,6 @@
-# ss-markdown
+# S.S. Markdown
 
-ss-markdownは、Markdownファイルを多言語展開するためのGitHub Actionsです。
+S.S. Markdownは、Markdownファイルを多言語展開するためのGitHub Actionsです。
 
 下記のAPIが使用できます。
 
