@@ -35,11 +35,13 @@ runs:
     - name: Install dependencies
       shell: bash
       run: go mod tidy
+      working-directory: ${{ github.action_path }}
       env:
         GITHUB_ACTION_PATH: ${{ github.action_path }}
 
     - name: Run translation script
       shell: bash
+      working-directory: ${{ github.action_path }}
       env:
         SS_MARKDOWN_OPENAI_API_KEY: ${{ inputs.openai-api-key }}
         SS_MARKDOWN_DEEPSEEK_API_KEY: ${{ inputs.deepseek-api-key }}
@@ -47,4 +49,4 @@ runs:
         SS_MARKDOWN_GOOGLE_GENERATIVE_MODEL: ${{ inputs.google-model }}
         SS_MARKDOWN_OPENAI_GENERATIVE_MODEL: ${{ inputs.openai-model }}
         SS_MARKDOWN_MODEL: ${{ inputs.ss-model }}
-      run: go run ${{ github.action_path }}/translate.go ${{ inputs.file }}
+      run: go run translate.go ${{ inputs.file }} $GITHUB_PATH

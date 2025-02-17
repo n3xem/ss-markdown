@@ -11,7 +11,7 @@ import (
 	"github.com/n3xem/ss-markdown/model"
 )
 
-func processMarkdownFile(filePath string, translator model.TranslationClient) error {
+func processMarkdownFile(filePath string, outputDir string, translator model.TranslationClient) error {
 	// 既に翻訳ファイルの場合はスキップ
 	baseName := filepath.Base(filePath)
 	if strings.Contains(strings.TrimSuffix(baseName, ".md"), ".") {
@@ -28,9 +28,13 @@ func processMarkdownFile(filePath string, translator model.TranslationClient) er
 	// 各言語に翻訳
 	for langCode := range model.Languages {
 		time.Sleep(5 * time.Second)
-		dir := filepath.Dir(filePath)
 		base := strings.TrimSuffix(filepath.Base(filePath), ".md")
-		translatedPath := filepath.Join(dir, fmt.Sprintf("%s.%s.md", base, langCode))
+		translatedPath := filepath.Join(outputDir, fmt.Sprintf("%s.%s.md", base, langCode))
+
+		// 出力ディレクトリが存在しない場合は作成
+		if err := os.MkdirAll(outputDir, 0755); err != nil {
+			return fmt.Errorf("failed to create output directory: %v", err)
+		}
 
 		// 既存の翻訳ファイルをスキップ
 		if _, err := os.Stat(translatedPath); err == nil {
@@ -63,11 +67,17 @@ func processMarkdownFile(filePath string, translator model.TranslationClient) er
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Error: Please specify a markdown file path")
+		fmt.Println("Usage: program <markdown_file> [output_directory]")
+		fmt.Println("If output_directory is not specified, the same directory as the input file will be used")
 		os.Exit(1)
 	}
 
 	filePath := os.Args[1]
+	outputDir := filepath.Dir(filePath) // デフォルトは入力ファイルと同じディレクトリ
+
+	if len(os.Args) > 2 {
+		outputDir = os.Args[2]
+	}
 
 	// ファイルの存在確認
 	fileInfo, err := os.Stat(filePath)
@@ -125,7 +135,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := processMarkdownFile(filePath, translator); err != nil {
+	if err := processMarkdownFile(filePath, outputDir, translator); err != nil {
 		fmt.Printf("Error processing %s: %v\n", filePath, err)
 		os.Exit(1)
 	}
