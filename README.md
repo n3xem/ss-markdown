@@ -13,8 +13,8 @@ S.S. Markdownは、Markdownファイルを多言語展開するためのGitHub A
 下記のAPIが使用できます。
 
 - OpenAI
-- DeepSeek
-- Google(Gemini)
+- DeepSeek(動作未確認)
+- Google(Gemini)(動作未確認)
 
 ## 入力
 
