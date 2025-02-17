@@ -93,6 +93,7 @@ func main() {
 	openaiKey := os.Getenv("OPENAI_API_KEY")
 	googleKey := os.Getenv("GOOGLE_API_KEY")
 	googleGenerativeModel := os.Getenv("GOOGLE_GENERATIVE_MODEL")
+	openaiGenerativeModel := os.Getenv("OPENAI_GENERATIVE_MODEL")
 	modelName := os.Getenv("SS_MODEL")
 
 	// 使用するモデルに基づいてトランスレーターを初期化
@@ -102,7 +103,7 @@ func main() {
 			fmt.Println("Error: OPENAI_API_KEY is not set")
 			os.Exit(1)
 		}
-		translator = model.NewOpenAITranslator(openaiKey, "openai")
+		translator = model.NewOpenAITranslator(openaiKey, openaiGenerativeModel)
 	case "deepseek":
 		if deepseekKey == "" {
 			fmt.Println("Error: DEEPSEEK_API_KEY is not set")
