@@ -7,6 +7,7 @@
 </p>
   
 &nbsp;
+
 S.S. Markdownは、Markdownファイルを多言語展開するためのGitHub Actionsです。
 
 下記のAPIが使用できます。
