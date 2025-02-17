@@ -1,0 +1,48 @@
+name: "S.S. Markdown"
+description: "Translates markdown files using various AI models"
+
+inputs:
+  file:
+    description: "Path to the markdown file to translate"
+    required: true
+    default: "README.md"
+  openai-api-key:
+    description: "OpenAI API Key"
+    required: false
+  deepseek-api-key:
+    description: "DeepSeek API Key"
+    required: false
+  google-api-key:
+    description: "Google API Key"
+    required: false
+  google-model:
+    description: "Google Generative AI model name"
+    required: false
+  openai-model:
+    description: "OpenAI model name"
+    required: false
+  ss-model:
+    description: "SS model configuration"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-go@v5
+      with:
+        go-version: "1.23"
+
+    - name: Install dependencies
+      shell: bash
+      run: go mod tidy
+
+    - name: Run translation script
+      shell: bash
+      env:
+        OPENAI_API_KEY: ${{ inputs.openai-api-key }}
+        DEEPSEEK_API_KEY: ${{ inputs.deepseek-api-key }}
+        GOOGLE_API_KEY: ${{ inputs.google-api-key }}
+        GOOGLE_GENERATIVE_MODEL: ${{ inputs.google-model }}
+        OPENAI_GENERATIVE_MODEL: ${{ inputs.openai-model }}
+        SS_MODEL: ${{ inputs.ss-model }}
+      run: go run translate.go ${{ inputs.file }}

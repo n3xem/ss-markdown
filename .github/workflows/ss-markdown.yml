@@ -1,5 +1,4 @@
-name: Translate Markdown Files
-
+name: Translate Docs
 on:
   workflow_dispatch:
 
@@ -11,23 +10,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - uses: ./action.yml
         with:
-          go-version: "1.23"
-
-      - name: Install dependencies
-        run: |
-          go mod tidy
-
-      - name: Run translation script
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          GOOGLE_GENERATIVE_MODEL: ${{ secrets.GOOGLE_GENERATIVE_MODEL }}
-          OPENAI_GENERATIVE_MODEL: ${{ secrets.OPENAI_GENERATIVE_MODEL }}
-          SS_MODEL: ${{ secrets.SS_MODEL }}
-        run: go run translate.go README.md
+          file: "README.md"
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          deepseek-api-key: ${{ secrets.DEEPSEEK_API_KEY }}
+          google-api-key: ${{ secrets.GOOGLE_API_KEY }}
+          google-model: ${{ secrets.GOOGLE_GENERATIVE_MODEL }}
+          openai-model: ${{ secrets.OPENAI_GENERATIVE_MODEL }}
+          ss-model: ${{ secrets.SS_MODEL }}
 
       - uses: EndBug/add-and-commit@v9
