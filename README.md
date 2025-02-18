@@ -51,8 +51,8 @@ jobs:
         with:
           file: "README.md"
           openai-api-key: ${{ secrets.SS_MARKDOWN_OPENAI_API_KEY }}
-          openai-model: ${{ secrets.SS_MARKDOWN_OPENAI_GENERATIVE_MODEL }}
-          ss-model: ${{ secrets.SS_MARKDOWN_MODEL }}
+          openai-model: "gpt-4o-mini"
+          ss-model: "openai"
       - uses: EndBug/add-and-commit@v9
 ```
 
