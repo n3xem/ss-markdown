@@ -8,27 +8,28 @@
   
 &nbsp;
 
-S.S. Markdown is a GitHub Action for multilingual deployment of Markdown files.
+S.S. Markdown is a GitHub Actions tool for multi-language deployment of Markdown files.
 
-The following APIs are available for use:
+The following APIs are available:
 
 - OpenAI
-- DeepSeek (unconfirmed functionality)
-- Google (Gemini) (unconfirmed functionality)
+- DeepSeek (Functionality not verified)
+- Google (Gemini) (Functionality not verified)
 
 ## Input
 
-| Input | Description | Required | Default |
-|-------|-------------|----------|---------|
-| `file` | Path to the Markdown file to be translated | No | `README.md` |
-| `openai-api-key` | OpenAI API key | No | - |
-| `deepseek-api-key` | DeepSeek API key | No | - |
-| `google-api-key` | Google API key | No | - |
-| `google-model` | Google Generative AI model name | No | - |
-| `openai-model` | OpenAI model name | No | - |
-| `ss-model` | Configuration of the model provider to use ('openai' or 'deepseek' or 'google') | Yes | - |
+| Input                   | Description                                           | Required | Default               |
+|------------------------|-------------------------------------------------------|----------|-----------------------|
+| `file`                 | Path to the Markdown file to be translated            | No       | `README.md`           |
+| `openai-api-key`       | OpenAI API key                                       | No       | -                     |
+| `deepseek-api-key`     | DeepSeek API key                                     | No       | -                     |
+| `google-api-key`       | Google API key                                       | No       | -                     |
+| `google-model`         | Google Generative AI model name                       | No       | -                     |
+| `openai-model`         | OpenAI model name                                    | No       | -                     |
+| `ss-model`             | Configuration for the model provider to use ('openai' or 'deepseek' or 'google') | Yes      | -                     |
+| `languages`            | Language codes to translate into (comma-separated)   | No       | `en,zh,fr,es,de,ko`   |
 
-## Usage Example
+## Examples
 
 ```yaml
 name: Translate Docs
@@ -49,4 +50,15 @@ jobs:
           openai-model: ${{ secrets.SS_MARKDOWN_OPENAI_GENERATIVE_MODEL }}
           ss-model: ${{ secrets.SS_MARKDOWN_MODEL }}
       - uses: EndBug/add-and-commit@v9
+```
+
+## Excluding certain sentences from translation
+
+If there are sentences that you do not want to include in the translated Markdown, such as links to each language, you can prevent them from being translated by surrounding them with the `ss-markdown-ignore start/end` directive.
+
+```markdown
+This sentence will be translated.
+The following directive will ignore the translation. (Readers of the translated Markdown should read the original text to see what is happening.)
+
+The directive has ended, so this sentence will be translated.
 ```

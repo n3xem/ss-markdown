@@ -1,5 +1,7 @@
 # S.S. Markdown
 
+
+
 &nbsp;
 <p align="center">
   <img src="https://github.com/user-attachments/assets/dab375e4-f973-41dd-bf26-1ff34231af8c"><br>
@@ -8,7 +10,7 @@
   
 &nbsp;
 
-S.S. Markdown est un GitHub Actions pour déployer des fichiers Markdown dans plusieurs langues.
+S.S. Markdown est une action GitHub pour déployer des fichiers Markdown en plusieurs langues.
 
 Les API suivantes peuvent être utilisées.
 
@@ -24,14 +26,15 @@ Les API suivantes peuvent être utilisées.
 | `openai-api-key` | Clé API OpenAI | Non | - |
 | `deepseek-api-key` | Clé API DeepSeek | Non | - |
 | `google-api-key` | Clé API Google | Non | - |
-| `google-model` | Nom du modèle AI génératif Google | Non | - |
+| `google-model` | Nom du modèle d'IA générative de Google | Non | - |
 | `openai-model` | Nom du modèle OpenAI | Non | - |
-| `ss-model` | Configuration du fournisseur de modèle à utiliser ('openai' ou 'deepseek' ou 'google') | Oui | - |
+| `ss-model` | Paramètre du fournisseur de modèle à utiliser ('openai' ou 'deepseek' ou 'google') | Oui | - |
+| `languages` | Codes des langues à traduire (séparés par des virgules) | Non | `en,zh,fr,es,de,ko` |
 
-## Exemple d'utilisation
+## Exemples d'utilisation
 
 ```yaml
-name: Traduire des Docs
+name: Traduire les docs
 on:
   workflow_dispatch:
 
@@ -49,4 +52,15 @@ jobs:
           openai-model: ${{ secrets.SS_MARKDOWN_OPENAI_GENERATIVE_MODEL }}
           ss-model: ${{ secrets.SS_MARKDOWN_MODEL }}
       - uses: EndBug/add-and-commit@v9
+```
+
+## Exclure certaines phrases de la traduction
+
+Si vous avez des phrases que vous ne souhaitez pas insérer dans le Markdown traduit, comme des liens vers chaque langue, vous pouvez les entourer avec la directive `ss-markdown-ignore start/end` pour qu'elles ne soient pas traduites.
+
+```markdown
+Cette phrase sera traduite.
+La traduction sera ignorée par la directive ci-dessous. (Les personnes qui lisent le Markdown traduit peuvent consulter le texte original pour voir ce qui se passe)
+
+La directive étant terminée, cette phrase sera traduite.
 ```
