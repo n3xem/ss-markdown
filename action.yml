@@ -24,6 +24,10 @@ inputs:
   ss-model:
     description: "SS model configuration"
     required: true
+  languages:
+    description: "Languages to translate to"
+    required: false
+    default: en,zh,fr,es,de,ko
 
 runs:
   using: "composite"
@@ -47,4 +51,4 @@ runs:
         SS_MARKDOWN_GOOGLE_GENERATIVE_MODEL: ${{ inputs.google-model }}
         SS_MARKDOWN_OPENAI_GENERATIVE_MODEL: ${{ inputs.openai-model }}
         SS_MARKDOWN_MODEL: ${{ inputs.ss-model }}
-      run: go run translate.go $GITHUB_WORKSPACE/${{ inputs.file }} $GITHUB_WORKSPACE
+      run: go run translate.go $GITHUB_WORKSPACE/${{ inputs.file }} $GITHUB_WORKSPACE "${{ inputs.languages }}"

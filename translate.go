@@ -11,7 +11,7 @@ import (
 	"github.com/n3xem/ss-markdown/model"
 )
 
-func processMarkdownFile(filePath string, outputDir string, translator model.TranslationClient) error {
+func processMarkdownFile(filePath string, outputDir string, translator model.TranslationClient, targetLangs []string) error {
 	// 既に翻訳ファイルの場合はスキップ
 	baseName := filepath.Base(filePath)
 	if strings.Contains(strings.TrimSuffix(baseName, ".md"), ".") {
@@ -25,9 +25,13 @@ func processMarkdownFile(filePath string, outputDir string, translator model.Tra
 
 	markdownContent := string(content)
 
-	// 各言語に翻訳
-	for langCode := range model.Languages {
-		time.Sleep(5 * time.Second)
+	// 指定された言語のみに翻訳
+	for _, langCode := range targetLangs {
+		if _, exists := model.Languages[langCode]; !exists {
+			fmt.Printf("Warning: Unsupported language code '%s' - skipping\n", langCode)
+			continue
+		}
+
 		base := strings.TrimSuffix(filepath.Base(filePath), ".md")
 		translatedPath := filepath.Join(outputDir, fmt.Sprintf("%s.%s.md", base, langCode))
 
@@ -55,6 +59,7 @@ func processMarkdownFile(filePath string, outputDir string, translator model.Tra
 		}
 
 		fmt.Printf("Created translation: %s\n", translatedPath)
+		time.Sleep(5 * time.Second)
 	}
 
 	return nil
@@ -62,16 +67,28 @@ func processMarkdownFile(filePath string, outputDir string, translator model.Tra
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: program <markdown_file> [output_directory]")
+		fmt.Println("Usage: program <markdown_file> [output_directory] [target_languages]")
 		fmt.Println("If output_directory is not specified, the same directory as the input file will be used")
+		fmt.Println("target_languages: Comma-separated language codes (e.g., 'en,zh,de'). If not specified, all supported languages will be used")
 		os.Exit(1)
 	}
 
 	filePath := os.Args[1]
-	outputDir := filepath.Dir(filePath) // デフォルトは入力ファイルと同じディレクトリ
+	outputDir := filepath.Dir(filePath)
+
+	// デフォルトは全言語
+	targetLangs := make([]string, 0, len(model.Languages))
+	for lang := range model.Languages {
+		targetLangs = append(targetLangs, lang)
+	}
 
 	if len(os.Args) > 2 {
 		outputDir = os.Args[2]
+	}
+
+	if len(os.Args) > 3 {
+		// カンマ区切りの言語コードを配列に分割
+		targetLangs = strings.Split(os.Args[3], ",")
 	}
 
 	// ファイルの存在確認
@@ -130,7 +147,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := processMarkdownFile(filePath, outputDir, translator); err != nil {
+	if err := processMarkdownFile(filePath, outputDir, translator, targetLangs); err != nil {
 		fmt.Printf("Error processing %s: %v\n", filePath, err)
 		os.Exit(1)
 	}
