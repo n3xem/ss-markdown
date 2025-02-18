@@ -12,6 +12,63 @@ import (
 	"github.com/n3xem/ss-markdown/util"
 )
 
+// 設定構造体を追加
+type Config struct {
+	filePath     string
+	outputDir    string
+	targetLangs  []string
+	modelName    string
+	openAIConfig struct {
+		apiKey          string
+		generativeModel string
+	}
+	deepseekConfig struct {
+		apiKey string
+	}
+	googleConfig struct {
+		apiKey          string
+		generativeModel string
+	}
+}
+
+// 設定を読み込む関数
+func loadConfig() (*Config, error) {
+	if len(os.Args) < 2 {
+		return nil, fmt.Errorf("Usage: program <markdown_file> [output_directory] [target_languages]\n" +
+			"If output_directory is not specified, the same directory as the input file will be used\n" +
+			"target_languages: Comma-separated language codes (e.g., 'en,zh,de'). If not specified, all supported languages will be used")
+	}
+
+	config := &Config{
+		filePath:  os.Args[1],
+		outputDir: filepath.Dir(os.Args[1]),
+	}
+
+	// 出力ディレクトリの設定
+	if len(os.Args) > 2 {
+		config.outputDir = os.Args[2]
+	}
+
+	// 対象言語の設定
+	config.targetLangs = make([]string, 0, len(model.Languages))
+	for lang := range model.Languages {
+		config.targetLangs = append(config.targetLangs, lang)
+	}
+	if len(os.Args) > 3 {
+		config.targetLangs = strings.Split(os.Args[3], ",")
+	}
+
+	// 環境変数から設定を読み込み
+	config.modelName = os.Getenv("SS_MARKDOWN_MODEL")
+	config.openAIConfig.apiKey = os.Getenv("SS_MARKDOWN_OPENAI_API_KEY")
+	config.openAIConfig.generativeModel = os.Getenv("SS_MARKDOWN_OPENAI_GENERATIVE_MODEL")
+	config.deepseekConfig.apiKey = os.Getenv("SS_MARKDOWN_DEEPSEEK_API_KEY")
+	config.googleConfig.apiKey = os.Getenv("SS_MARKDOWN_GOOGLE_API_KEY")
+	config.googleConfig.generativeModel = os.Getenv("SS_MARKDOWN_GOOGLE_GENERATIVE_MODEL")
+
+	return config, nil
+}
+
 func processMarkdownFile(filePath string, outputDir string, translator model.TranslationClient, targetLangs []string) error {
 	// 既に翻訳ファイルの場合はスキップ
 	baseName := filepath.Base(filePath)
@@ -72,33 +129,14 @@ func processMarkdownFile(filePath string, outputDir string, translator model.Tra
 }
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: program <markdown_file> [output_directory] [target_languages]")
-		fmt.Println("If output_directory is not specified, the same directory as the input file will be used")
-		fmt.Println("target_languages: Comma-separated language codes (e.g., 'en,zh,de'). If not specified, all supported languages will be used")
+	config, err := loadConfig()
+	if err != nil {
+		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	filePath := os.Args[1]
-	outputDir := filepath.Dir(filePath)
-
-	// デフォルトは全言語
-	targetLangs := make([]string, 0, len(model.Languages))
-	for lang := range model.Languages {
-		targetLangs = append(targetLangs, lang)
-	}
-
-	if len(os.Args) > 2 {
-		outputDir = os.Args[2]
-	}
-
-	if len(os.Args) > 3 {
-		// カンマ区切りの言語コードを配列に分割
-		targetLangs = strings.Split(os.Args[3], ",")
-	}
-
 	// ファイルの存在確認
-	fileInfo, err := os.Stat(filePath)
+	fileInfo, err := os.Stat(config.filePath)
 	if err != nil {
 		fmt.Printf("Error: File not found or cannot be accessed: %v\n", err)
 		os.Exit(1)
@@ -109,41 +147,33 @@ func main() {
 		os.Exit(1)
 	}
 
-	if !strings.HasSuffix(filePath, ".md") {
+	if !strings.HasSuffix(config.filePath, ".md") {
 		fmt.Println("Error: Specified file is not a markdown file")
 		os.Exit(1)
 	}
 
 	var translator model.TranslationClient
 
-	// 環境変数からAPIキーとモデルを取得
-	deepseekKey := os.Getenv("SS_MARKDOWN_DEEPSEEK_API_KEY")
-	openaiKey := os.Getenv("SS_MARKDOWN_OPENAI_API_KEY")
-	googleKey := os.Getenv("SS_MARKDOWN_GOOGLE_API_KEY")
-	googleGenerativeModel := os.Getenv("SS_MARKDOWN_GOOGLE_GENERATIVE_MODEL")
-	openaiGenerativeModel := os.Getenv("SS_MARKDOWN_OPENAI_GENERATIVE_MODEL")
-	modelName := os.Getenv("SS_MARKDOWN_MODEL")
-
 	// 使用するモデルに基づいてトランスレーターを初期化
-	switch modelName {
+	switch config.modelName {
 	case "openai":
-		if openaiKey == "" {
+		if config.openAIConfig.apiKey == "" {
 			fmt.Println("Error: SS_MARKDOWN_OPENAI_API_KEY is not set")
 			os.Exit(1)
 		}
-		translator = model.NewOpenAITranslator(openaiKey, openaiGenerativeModel)
+		translator = model.NewOpenAITranslator(config.openAIConfig.apiKey, config.openAIConfig.generativeModel)
 	case "deepseek":
-		if deepseekKey == "" {
+		if config.deepseekConfig.apiKey == "" {
 			fmt.Println("Error: SS_MARKDOWN_DEEPSEEK_API_KEY is not set")
 			os.Exit(1)
 		}
-		translator = model.NewDeepseekTranslator(deepseekKey)
+		translator = model.NewDeepseekTranslator(config.deepseekConfig.apiKey)
 	case "google":
-		if googleKey == "" {
+		if config.googleConfig.apiKey == "" {
 			fmt.Println("Error: SS_MARKDOWN_GOOGLE_API_KEY is not set")
 			os.Exit(1)
 		}
-		translator, err = model.NewGoogleTranslator(googleKey, googleGenerativeModel)
+		translator, err = model.NewGoogleTranslator(config.googleConfig.apiKey, config.googleConfig.generativeModel)
 		if err != nil {
 			fmt.Printf("Error: Failed to create Google translator: %v\n", err)
 			os.Exit(1)
@@ -153,8 +183,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := processMarkdownFile(filePath, outputDir, translator, targetLangs); err != nil {
-		fmt.Printf("Error processing %s: %v\n", filePath, err)
+	if err := processMarkdownFile(config.filePath, config.outputDir, translator, config.targetLangs); err != nil {
+		fmt.Printf("Error processing %s: %v\n", config.filePath, err)
 		os.Exit(1)
 	}
 }
