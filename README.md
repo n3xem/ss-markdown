@@ -27,6 +27,7 @@ S.S. Markdownは、Markdownファイルを多言語展開するためのGitHub A
 | `google-model` | Google Generative AIモデル名 | No | - |
 | `openai-model` | OpenAIモデル名 | No | - |
 | `ss-model` | 使用するモデルプロバイダーの設定('openai' or 'deepseek' or 'google') | Yes | - |
+| `languages` | 翻訳する言語コード(カンマ区切り) | No | `en,zh,fr,es,de,ko` |
 
 ## 使用例
 
