@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/n3xem/ss-markdown/model"
+	"github.com/n3xem/ss-markdown/util"
 )
 
 func processMarkdownFile(filePath string, outputDir string, translator model.TranslationClient, targetLangs []string) error {
@@ -26,7 +27,9 @@ func processMarkdownFile(filePath string, outputDir string, translator model.Tra
 	markdownContent := string(content)
 
 	// Remove content between ignore directives
-	markdownContent = removeIgnoredContent(markdownContent)
+	startTag := "<!-- ss-markdown-ignore start -->"
+	endTag := "<!-- ss-markdown-ignore end -->"
+	markdownContent = util.RemoveTaggedContent(markdownContent, startTag, endTag)
 
 	// 指定された言語のみに翻訳
 	for _, langCode := range targetLangs {
@@ -66,30 +69,6 @@ func processMarkdownFile(filePath string, outputDir string, translator model.Tra
 	}
 
 	return nil
-}
-
-// Add new helper function
-func removeIgnoredContent(content string) string {
-	startTag := "<!-- ss-markdown-ignore start -->"
-	endTag := "<!-- ss-markdown-ignore end -->"
-
-	for {
-		startIdx := strings.Index(content, startTag)
-		if startIdx == -1 {
-			break
-		}
-
-		endIdx := strings.Index(content[startIdx:], endTag)
-		if endIdx == -1 {
-			break
-		}
-		endIdx += startIdx + len(endTag)
-
-		// Remove the content between and including the tags
-		content = content[:startIdx] + content[endIdx:]
-	}
-
-	return content
 }
 
 func main() {
