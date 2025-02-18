@@ -10,11 +10,11 @@
 
 S.S. Markdown is a GitHub Action for multilingual deployment of Markdown files.
 
-The following APIs can be used:
+The following APIs are available for use:
 
 - OpenAI
-- DeepSeek (operation unverified)
-- Google (Gemini) (operation unverified)
+- DeepSeek (unconfirmed functionality)
+- Google (Gemini) (unconfirmed functionality)
 
 ## Input
 
@@ -26,9 +26,9 @@ The following APIs can be used:
 | `google-api-key` | Google API key | No | - |
 | `google-model` | Google Generative AI model name | No | - |
 | `openai-model` | OpenAI model name | No | - |
-| `ss-model` | Configuration of the model provider to be used ('openai' or 'deepseek' or 'google') | Yes | - |
+| `ss-model` | Configuration of the model provider to use ('openai' or 'deepseek' or 'google') | Yes | - |
 
-## Example Usage
+## Usage Example
 
 ```yaml
 name: Translate Docs
