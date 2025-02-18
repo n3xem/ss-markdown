@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: n3xem/ss-markdown@v0.0.1
+      - uses: n3xem/ss-markdown@v0.2.1
         with:
           file: "README.md"
           openai-api-key: ${{ secrets.SS_MARKDOWN_OPENAI_API_KEY }}
