@@ -1,7 +1,5 @@
 # S.S. Markdown
 
-
-
 &nbsp;
 <p align="center">
   <img src="https://github.com/user-attachments/assets/dab375e4-f973-41dd-bf26-1ff34231af8c"><br>
@@ -10,13 +8,13 @@
   
 &nbsp;
 
-S.S. Markdown est une action GitHub pour déployer des fichiers Markdown en plusieurs langues.
+S.S. Markdown est une action GitHub pour déployer des fichiers Markdown dans plusieurs langues.
 
-Les API suivantes peuvent être utilisées.
+Les API suivantes sont disponibles.
 
 - OpenAI
-- DeepSeek (fonctionnement non vérifié)
-- Google (Gemini) (fonctionnement non vérifié)
+- DeepSeek (fonctionnement non confirmé)
+- Google (Gemini) (fonctionnement non confirmé)
 
 ## Entrée
 
@@ -28,13 +26,13 @@ Les API suivantes peuvent être utilisées.
 | `google-api-key` | Clé API Google | Non | - |
 | `google-model` | Nom du modèle d'IA générative de Google | Non | - |
 | `openai-model` | Nom du modèle OpenAI | Non | - |
-| `ss-model` | Paramètre du fournisseur de modèle à utiliser ('openai' ou 'deepseek' ou 'google') | Oui | - |
+| `ss-model` | Configuration du fournisseur de modèle à utiliser ('openai' ou 'deepseek' ou 'google') | Oui | - |
 | `languages` | Codes des langues à traduire (séparés par des virgules) | Non | `en,zh,fr,es,de,ko` |
 
-## Exemples d'utilisation
+## Exemple d'utilisation
 
 ```yaml
-name: Traduire les docs
+name: Translate Docs
 on:
   workflow_dispatch:
 
@@ -45,22 +43,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: n3xem/ss-markdown@v0.0.1
+      - uses: n3xem/ss-markdown@v0.2.1
         with:
           file: "README.md"
           openai-api-key: ${{ secrets.SS_MARKDOWN_OPENAI_API_KEY }}
-          openai-model: ${{ secrets.SS_MARKDOWN_OPENAI_GENERATIVE_MODEL }}
-          ss-model: ${{ secrets.SS_MARKDOWN_MODEL }}
+          openai-model: "gpt-4o-mini"
+          ss-model: "openai"
       - uses: EndBug/add-and-commit@v9
 ```
 
 ## Exclure certaines phrases de la traduction
 
-Si vous avez des phrases que vous ne souhaitez pas insérer dans le Markdown traduit, comme des liens vers chaque langue, vous pouvez les entourer avec la directive `ss-markdown-ignore start/end` pour qu'elles ne soient pas traduites.
+S'il y a des phrases que vous ne souhaitez pas insérer dans le Markdown traduit, comme des liens vers des langues, vous pouvez utiliser les directives `ss-markdown-ignore start/end` pour éviter qu'elles ne soient traduites.
 
 ```markdown
-Cette phrase sera traduite.
-La traduction sera ignorée par la directive ci-dessous. (Les personnes qui lisent le Markdown traduit peuvent consulter le texte original pour voir ce qui se passe)
+Cette phrase ici sera traduite.
+La traduction sera ignorée par la directive ci-dessous. (Les lecteurs du Markdown traduit peuvent lire le texte original pour comprendre ce qui se passe)
 
-La directive étant terminée, cette phrase sera traduite.
+La directive étant terminée, cette phrase ici sera traduite.
 ```
