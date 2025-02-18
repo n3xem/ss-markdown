@@ -1,12 +1,20 @@
 # S.S. Markdown
 
-S.S. Markdown ist eine GitHub Action zur mehrsprachigen Bereitstellung von Markdown-Dateien.
+&nbsp;
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/dab375e4-f973-41dd-bf26-1ff34231af8c"><br>
+  Alle an Bord!
+</p>
+  
+&nbsp;
+
+S.S. Markdown ist ein GitHub-Action für die mehrsprachige Bereitstellung von Markdown-Dateien.
 
 Die folgenden APIs können verwendet werden:
 
 - OpenAI
-- DeepSeek
-- Google (Gemini)
+- DeepSeek (Funktion noch nicht überprüft)
+- Google (Gemini) (Funktion noch nicht überprüft)
 
 ## Eingabe
 
@@ -18,17 +26,17 @@ Die folgenden APIs können verwendet werden:
 | `google-api-key` | Google API-Schlüssel | Nein | - |
 | `google-model` | Name des Google Generative AI-Modells | Nein | - |
 | `openai-model` | Name des OpenAI-Modells | Nein | - |
-| `ss-model` | Konfiguration des zu verwendenden Modellanbieters ('openai' oder 'deepseek' oder 'google') | Ja | - |
+| `ss-model` | Einstellung des zu verwendenden Modellanbieters ('openai' oder 'deepseek' oder 'google') | Ja | - |
 
 ## Anwendungsbeispiel
 
 ```yaml
-name: Translate Docs
+name: Dokumente übersetzen
 on:
   workflow_dispatch:
 
 jobs:
-  translate:
+  übersetzen:
     permissions:
       contents: write
     runs-on: ubuntu-latest
